@@ -59,22 +59,98 @@ function Get-RemoteFile {
     return $true
 }
 
+function Get-LatestSynToolkitInstaller {
+    param(
+        [Parameter(Mandatory = $true)][string]$MetadataPath
+    )
+
+    $releaseApiUrl = 'https://api.github.com/repos/Synergy-Tweaks/SynToolkit/releases/latest'
+    if (!(Get-RemoteFile -Url $releaseApiUrl -Path $MetadataPath -Name 'SynToolkit release metadata')) {
+        return $null
+    }
+
+    try {
+        $release = Get-Content -LiteralPath $MetadataPath -Raw | ConvertFrom-Json -ErrorAction Stop
+    }
+    catch {
+        Write-Error "SynToolkit release metadata could not be read."
+        return $null
+    }
+
+    if ($release.prerelease -or $release.draft) {
+        Write-Error 'SynToolkit latest-release metadata did not identify a published Stable release.'
+        return $null
+    }
+
+    $stableAssets = @($release.assets | Where-Object {
+            $_.name -match '^SynToolkit-Setup-\d+(?:\.\d+){1,3}-Stable\.exe$'
+        })
+
+    if ($stableAssets.Count -eq 0) {
+        $stableAssets = @($release.assets | Where-Object {
+                $_.name -match '^SynToolkit-Setup(?:-\d+(?:\.\d+){1,3})?\.exe$'
+            })
+    }
+
+    if ($stableAssets.Count -ne 1) {
+        Write-Error "SynToolkit release '$($release.tag_name)' did not contain exactly one Stable installer asset."
+        return $null
+    }
+
+    $asset = $stableAssets[0]
+    try {
+        $downloadUri = [Uri]$asset.browser_download_url
+    }
+    catch {
+        Write-Error 'SynToolkit release metadata contained an invalid installer URL.'
+        return $null
+    }
+
+    if (($downloadUri.Scheme -ne 'https') -or ($downloadUri.Host -ne 'github.com')) {
+        Write-Error 'SynToolkit release metadata pointed to an unexpected installer host.'
+        return $null
+    }
+
+    $digest = [string]$asset.digest
+    if ($digest -notmatch '^sha256:([A-Fa-f0-9]{64})$') {
+        Write-Error "SynToolkit release '$($release.tag_name)' did not provide a valid SHA-256 checksum."
+        return $null
+    }
+
+    return [PSCustomObject]@{
+        Version = [string]$release.tag_name
+        Url     = $downloadUri.AbsoluteUri
+        FileName = [string]$asset.name
+        Sha256  = $Matches[1].ToUpperInvariant()
+    }
+}
+
 $tempDir = Join-Path -Path $env:TEMP -ChildPath ([guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
 Push-Location $tempDir
 
-# SynToolkit
-$synToolkitSha256 = 'BFB7CD62BCEDEF419EB347168257E35FB1444A163C3BECD110F12275E00EEBE8'
 if ($SynToolkit) {
-    Write-Output "Downloading SynToolkit..."
-    if (!(Get-RemoteFile -Url "https://github.com/Synergy-Tweaks/SynToolkit/releases/download/1.6/SynToolkit-Setup.exe" `
-                         -Path "$tempDir\SynToolkit-Setup.exe" -Name "SynToolkit" -Sha256 $synToolkitSha256)) {
+    $synToolkitInstaller = Get-LatestSynToolkitInstaller -MetadataPath "$tempDir\SynToolkit-release.json"
+    if (!$synToolkitInstaller) {
+        Remove-TempDirectory
+        exit 1
+    }
+
+    $synToolkitInstallerPath = Join-Path $tempDir $synToolkitInstaller.FileName
+    Write-Output "Downloading SynToolkit $($synToolkitInstaller.Version)..."
+    if (!(Get-RemoteFile -Url $synToolkitInstaller.Url -Path $synToolkitInstallerPath -Name 'SynToolkit' -Sha256 $synToolkitInstaller.Sha256)) {
         Remove-TempDirectory
         exit 1
     }
 
     Write-Output "Installing SynToolkit..."
-    Start-Process -FilePath "$tempDir\SynToolkit-Setup.exe" -WindowStyle Hidden -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART' -Wait
+    $installerProcess = Start-Process -FilePath $synToolkitInstallerPath -WindowStyle Hidden -ArgumentList '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART' -Wait -PassThru
+
+    if ($installerProcess.ExitCode -ne 0) {
+        Write-Error "SynToolkit setup failed with exit code $($installerProcess.ExitCode)."
+        Remove-TempDirectory
+        exit 1
+    }
 
     Remove-TempDirectory
     exit
