@@ -25,6 +25,13 @@ actions:
     type: REG_DWORD
     data: '0'
 
+ - !writeStatus {status: "Configuring MMCSS NIC"}
+ - !powerShell:
+    command: '.\mmcss-nic.ps1'
+    exeDir: true
+    runas: currentUserElevated
+    wait: true
+    weight: 8
 
   # OEM Information
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation', value: 'Model', type: REG_SZ, data: 'SYNERGYOS', iso: true}
