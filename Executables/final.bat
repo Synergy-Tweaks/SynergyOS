@@ -76,6 +76,9 @@ sc config wsearch start=disabled
 sc stop sysmain
 sc config sysmain start=disabled
 
+:: disable FTH
+reg add "HKLM\Software\Microsoft\FTH" /v Enabled /t REG_DWORD /d "0" /f
+
 :: Session Manager
 Reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager" /v "DisableWpbtExecution" /t REG_DWORD /d "1" /f
 Reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v "HiberbootEnabled" /t REG_DWORD /d "0" /f
