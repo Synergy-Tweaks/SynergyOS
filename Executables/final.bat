@@ -1,7 +1,6 @@
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
 
-
 :: clear pinned taskbar shortcuts
 del /f /q "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar*"
 
@@ -25,9 +24,9 @@ for /f "tokens=*" %%i in ('reg query "HKLM\SYSTEM\CurrentControlSet\Enum\SCSI" ^
 :: disable copilot on taskbar
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowCopilotButton /t REG_DWORD /d 0 /f
 
-
 :: configure boot settings
-bcdedit /timeout 3
+bcdedit /timeout 5
+bcdedit /set nx optin
 bcdedit /set disabledynamictick yes
 bcdedit /deletevalue useplatformclock
 bcdedit /deletevalue useplatformtick
@@ -37,8 +36,6 @@ bcdedit /set bootmenupolicy Legacy
 for /f %%i in ('Reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services" /s /f DmaRemappingCompatible ^| find /i "Services\" ') do (
 	Reg add "%%i" /v "DmaRemappingCompatible" /t REG_DWORD /d "0" /f
 )
-
-
 
 Reg add "HKCU\Control Panel\Desktop" /v AutoEndTasks /t REG_SZ /d 1 /f
 Reg add "HKCU\Control Panel\Desktop" /v HungAppTimeout /t REG_SZ /d 1500 /f
@@ -55,9 +52,6 @@ Reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\GameDVR" /v "AppCaptureE
 Reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\GameDVR" /v "AllowGameDVR" /t REG_DWORD /d "0" /f 
 Reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\default\ApplicationManagement\AllowGameDVR" /v "value" /t REG_DWORD /d "0" /f 
 
-
-:: (the SCSI write-cache loop that used to be duplicated here is already applied above)
-
 :: configure NTFS settings
 fsutil behavior set disablelastaccess 1
 fsutil behavior set disable8dot3 1
@@ -65,7 +59,7 @@ fsutil behavior set disablecompression 1
 fsutil quota disable C:
 
 :: configure powershell
-powershell Set-ExecutionPolicy RemoteSigned -Force
+powershell Set-ExecutionPolicy Unrestricted -Force
 setx POWERSHELL_TELEMETRY_OPTOUT 1
 
 :: Enable Optimizations for Windowed/Borderless Games
@@ -95,6 +89,7 @@ Reg add "HKLM\SYSTEM\CurrentControlSet\Control\Wdf" /v "WdfGlobalSleepStudyDisab
 
 :: Enable HAGS
 Reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d "2" /f
+
 :: Get the build number from the `ver` command
 for /f "tokens=6 delims=[]. " %%a in ('ver') do set version=%%a
 
@@ -116,6 +111,11 @@ Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.bat\ShellNew" /v "NullFile" /t REG
 :: add new reg file to context menu
 Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.reg\ShellNew" /v "ItemName" /t REG_EXPAND_SZ /d "@C:\Windows\regedit.exe,-309" /f 
 Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.reg\ShellNew" /v "NullFile" /t REG_SZ /d "" /f 
+
+:: disable ctfmon
+Reg add "HKLM\SOFTWARE\Microsoft\Input" /v "InputServiceEnabled" /t REG_DWORD /d "0" /f
+Reg add "HKLM\SOFTWARE\Microsoft\Input" /v "InputServiceEnabledForCCI" /t REG_DWORD /d "0" /f
+Reg add "HKLM\SYSTEM\CurrentControlSet\Services\TextInputManagementService\Parameters" /v "ServiceDll" /t REG_EXPAND_SZ /d "%SystemRoot%\System32\MSCTF.DLL" /f
 
 :: register .pow as a file type
 Reg add "HKCR\.pow" /v "" /t REG_SZ /d "Power Plan" /f
