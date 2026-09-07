@@ -1,5 +1,6 @@
 @echo off
 SETLOCAL ENABLEDELAYEDEXPANSION
+
 for %%i in (
   EnhancedPowerManagementEnabled
   AllowIdleIrpInD3
@@ -17,12 +18,14 @@ for %%i in (
 ) do for /f %%a in ('Reg query "HKLM\SYSTEM\CurrentControlSet\Enum" /s /f "%%i"^| findstr "HKEY"') do Reg add "%%a" /v "%%i" /t REG_DWORD /d "0" /f  
 
 powercfg /h off
+
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "EnergyEstimationEnabled" /t REG_DWORD /d "0" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "SleepStudyDisabled" /t REG_DWORD /d "1" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "CoalescingFlushInterval" /t REG_DWORD /d "0" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "CoalescingTimerInterval" /t REG_DWORD /d "0" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "EventProcessorEnabled" /t REG_DWORD /d "0" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "FxAccountingTelemetryDisabled" /t REG_DWORD /d "1" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "SleepstudyAccountingEnabled" /t REG_DWORD /d "0" /f
 
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "MSDisabled" /t REG_DWORD /d "1" /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "PlatformAoAcOverride" /t REG_DWORD /d "0" /f
@@ -36,28 +39,15 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Services\stornvme\Parameters\Device" /v "
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Storage" /v "StorageD3InModernStandby" /t REG_DWORD /d "0" /f
 
 reg add "HKLM\SYSTEM\CurrentControlSet\Services\WmiAcpi" /v "Start" /t REG_DWORD /d "4" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\AcpiPmi" /v "Start" /t REG_DWORD /d "4" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\acpitime" /v "Start" /t REG_DWORD /d "4" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\GpuEnergyDrv" /v "Start" /t REG_DWORD /d "4" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\GraphicsPerfSvc" /v "Start" /t REG_DWORD /d "4" /f
+reg add "HKLM\SYSTEM\CurrentControlSet\Services\intelpmt" /v "Start" /t REG_DWORD /d "4" /f
 
-powershell -nop -noni -exec bypass -c "Get-WmiObject MSPower_DeviceEnable -Namespace root\wmi | ForEach-Object { $_.enable = $false; $_.psbase.put(); }"
-:: Import the SynergyOS power plan, and only remove the built-in plans once it is
-:: confirmed active. Previously the three built-ins were deleted unconditionally, so
-:: a missing or unreadable sos.pow left the machine with no power plan at all.
-powercfg -delete 77777777-7777-7777-7777-777777777777 >nul 2>&1
+powershell "Set-CimInstance -Query 'SELECT InstanceName FROM MSPower_DeviceWakeEnable WHERE (Enable = True)' -Namespace 'root\WMI' -Property @{Enable = $false}"
+powershell "Set-CimInstance -Query 'SELECT InstanceName FROM MSPower_DeviceEnable WHERE (Enable = True)' -Namespace 'root\WMI' -Property @{Enable = $false}"
 
-if not exist "%WinDir%\sos.pow" (
-    echo [power.bat] sos.pow not found in %WinDir% - keeping the built-in power plans.
-    goto :skipplans
-)
-
+powercfg -delete 77777777-7777-7777-7777-777777777777
 powercfg -import "%WinDir%\sos.pow" 77777777-7777-7777-7777-777777777777
-if errorlevel 1 (
-    echo [power.bat] Failed to import sos.pow - keeping the built-in power plans.
-    goto :skipplans
-)
-
 powercfg -setactive 77777777-7777-7777-7777-777777777777
-if errorlevel 1 (
-    echo [power.bat] Failed to activate the SynergyOS plan - keeping the built-in power plans.
-    goto :skipplans
-)
-
-:skipplans
