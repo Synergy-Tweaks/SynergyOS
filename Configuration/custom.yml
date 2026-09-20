@@ -90,6 +90,13 @@ actions:
  - !writeStatus {status: "Disabling Services"}
  - !task {path: 'Tasks\services.yml'}
 
+ - !writeStatus {status: "Configuring Wallpaper Quality"}
+ - !registryValue:
+    path: 'HKCU\Control Panel\Desktop'
+    value: 'JPEGImportQuality'
+    data: '100'
+    type: REG_DWORD
+
  - !writeStatus {status: "Optimizing PowerShell"}
  - !run:
     exeDir: true
