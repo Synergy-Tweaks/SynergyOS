@@ -68,7 +68,7 @@ Want to help fix a bug or build a new feature? Open the [Issues](https://github.
 ## Connect
 
 - **Business Email:** khanwbizz@gmail.com
-- **Discord:** [discord.gg/kwanteks](https://discord.gg/kwanteks)
+- **Discord:** [Kwanteks](https://dsc.gg/kwanteks)
 - **YouTube:** [youtube.com/@kwanteks](https://youtube.com/@kwanteks)
 
 ## Contributors
