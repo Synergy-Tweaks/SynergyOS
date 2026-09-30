@@ -24,6 +24,10 @@ for /f "tokens=*" %%i in ('reg query "HKLM\SYSTEM\CurrentControlSet\Enum\SCSI" ^
 :: disable copilot on taskbar
 Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowCopilotButton /t REG_DWORD /d 0 /f
 
+:: start menu categories cleanup (25H2)
+Reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v HideCategoryView /t REG_DWORD /d 1 /f
+Reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v NoStartMenuMorePrograms /t REG_DWORD /d 1 /f
+
 :: configure boot settings
 bcdedit /timeout 5
 bcdedit /set nx optin
