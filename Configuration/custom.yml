@@ -25,7 +25,7 @@ actions:
     type: REG_DWORD
     data: '0'
 
- - !writeStatus {status: "Configuring MMCSS NIC"}
+ - !writeStatus {status: "Configuring MMCSS"}
  - !powerShell:
     command: '.\mmcss-nic.ps1'
     exeDir: true
@@ -86,9 +86,11 @@ actions:
 
  - !writeStatus {status: 'Configuring Settings'}
  - !task {path: 'Tasks\registry\settings.yml'}
+ - !task {path: 'Tasks\qol\qol.yml'}
   
  - !writeStatus {status: "Disabling Services"}
  - !task {path: 'Tasks\services.yml'}
+
 
  - !writeStatus {status: "Configuring Wallpaper Quality"}
  - !registryValue:
