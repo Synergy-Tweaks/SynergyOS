@@ -4,8 +4,8 @@ SETLOCAL ENABLEDELAYEDEXPANSION
 :: clear pinned taskbar shortcuts
 del /f /q "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar*"
 
-:: remove onedrive from file explorer sidebar
-Reg add "HKEY_CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /v System.IsPinnedToNameSpaceTree /t REG_DWORD /d 0 /f
+:: remove onedrive leftover shortcut from file explorer sidebar
+Reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
 
 :: remove oned and msedge shortcut from startup
 Reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDrive" /f
