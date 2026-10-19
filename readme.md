@@ -2,8 +2,10 @@
   <img width="3736" height="2508" alt="sos" src="https://github.com/user-attachments/assets/750bb727-b4ed-4373-829b-689a9a48df2e" />
 
 </h1>
-  <p align="center">
+   <p align="center">
     <a href="https://github.com/Synergy-Tweaks/SynergyOS/releases" target="_blank"><img alt="Release" src="https://img.shields.io/github/release/Synergy-Tweaks/SynergyOS?style=for-the-badge&color=1A91FF" /></a>
+    <a href="https://github.com/Synergy-Tweaks/SynergyOS/releases" target="_blank"><img alt="Downloads" src="https://img.shields.io/github/downloads/Synergy-Tweaks/SynergyOS/total?style=for-the-badge&color=1A91FF&label=Downloads" /></a>
+    <a href="https://discord.gg/rpKVgutq6F" target="_blank"><img alt="Discord" src="https://img.shields.io/discord/1395215998646489211?style=for-the-badge&color=1A91FF&logo=discord&logoColor=white&label=Discord" /></a>
     <img alt="Supported Versions" src="https://img.shields.io/badge/Windows%2011%20%26%2010-1a91ff?style=for-the-badge&logo=windows" />
   </p>
 <p align="center"> The ONLY Windows Modification Playbook that Your PC Will Ever Need designed to optimize performance, privacy, and usability.</p>
