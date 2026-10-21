@@ -13,10 +13,6 @@
 <p align="center">
   <a href="https://github.com/Synergy-Tweaks/SynergyOS" target="_blank">🌐 GitHub Repository</a>
   •
-  <a href="https://github.com/Synergy-Tweaks/SynergyOS/releases" target="_blank">📦 Releases</a>
-  •
-  <a href="https://discord.gg/kwanteks" target="_blank">☎️ Discord</a>
-  •
   <a href="https://github.com/Synergy-Tweaks/SynergyOS/discussions" target="_blank">💬 Discussions</a>
 </p>
 
