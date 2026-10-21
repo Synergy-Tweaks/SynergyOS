@@ -40,7 +40,6 @@ unless you tick it.
 
 | Option | What it does | Why you might not want it |
 | --- | --- | --- |
-| Disable Defender | Stops the Defender services and deletes its binaries | Irreversible without a repair install, and leaves the machine with no AV |
 | Disable Exploit Mitigations | Forces DEP, ASLR, SEHOP and CFG off machine-wide | Applies to every process, not just games; most anti-cheats refuse to run |
 | Disable User Account Control | `EnableLUA=0`, no elevation prompts | Everything you launch runs fully elevated, and UWP/Store apps stop working |
 | Disable VBS / HVCI / Credential Guard | Turns off virtualisation-based security and LSA Protection | LSA Protection is what stops credential-dumping tools reading `lsass` |

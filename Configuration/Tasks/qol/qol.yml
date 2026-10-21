@@ -128,7 +128,6 @@ actions:
  - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4}
  - !service: {name: 'diagsvc', operation: change, startup: 4}
  - !service: {name: 'DPS', operation: change, startup: 4}
- # Keep intelpmt enabled - required for laptop brightness / GPU switching
  - !service: {name: 'pla', operation: change, startup: 4}
  - !service: {name: 'Telemetry', operation: change, startup: 4}
  - !service: {name: 'troubleshootingsvc', operation: change, startup: 4}
