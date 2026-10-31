@@ -135,3 +135,8 @@ Reg add "HKCR\.pow" /v "" /t REG_SZ /d "Power Plan" /f
 Reg add "HKCR\.pow" /v "FriendlyTypeName" /t REG_SZ /d "Power Plan" /f
 Reg add "HKCR\.pow\DefaultIcon" /v "" /t REG_EXPAND_SZ /d "%SystemRoot%\System32\powercfg.cpl,-202" /f
 Reg add "HKCR\.pow\shell\Import\command" /v "" /t REG_SZ /d "powercfg /import \"%1\"" /f
+
+:: remove Microsoft Edge from task manager startup
+for /f "tokens=1" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /f "MicrosoftEdgeAutoLaunch*" /v ^| findstr /i "MicrosoftEdgeAutoLaunch"') do (
+  reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "%%i" /f
+)
