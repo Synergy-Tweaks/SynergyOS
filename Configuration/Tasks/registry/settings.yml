@@ -116,10 +116,6 @@ actions:
  # Disable-MMAgent requires SysMain running (error 1058 otherwise); services.yml disables SysMain afterwards
  - !powerShell: {command: 'Set-Service SysMain -StartupType Manual; Start-Service SysMain -EA 0; Disable-MMAgent -MemoryCompression', wait: true}
 
- # disable windows defender
- - !writeStatus {status: "Disabling Windows Defender"}
- - !cmd: {command: '"defender.bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "disable-defender"}
-
  - !writeStatus {status: "Disabling Mitigations"}
  - !cmd: {command: '"mitigations.bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "disable-mitigations"}
 

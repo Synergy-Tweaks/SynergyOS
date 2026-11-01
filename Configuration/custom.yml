@@ -14,6 +14,10 @@ actions:
  - !cmd: {exeDir: true, command: 'xcopy "SOS" "%systemdrive%\SOS" /E /I /Y', wait: true}
  - !cmd: {exeDir: true, command: 'xcopy "User Account Pictures" "%ProgramData%\Microsoft\User Account Pictures" /E /I /Y', wait: true}
 
+ - !writeStatus {status: "Disabling Windows Defender"}
+ - !powerShell: {command: '.\DisableDefender.ps1', exeDir: true, wait: true, option: "disable-defender"}
+ - !cmd: {command: '"DisableDefenderServices.bat"', exeDir: true, wait: true, option: "disable-defender"}
+
  - !powerShell:
       command: 'Copy-Item -Path ".\SOS.lnk" -Destination "$env:PUBLIC\Desktop\SOS.lnk" -Force'
       exeDir: true
