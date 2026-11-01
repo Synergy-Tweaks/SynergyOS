@@ -1,0 +1,27 @@
+# Normalize text files; Windows scripts must keep CRLF.
+* text=auto
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.reg text eol=crlf
+*.url text eol=crlf
+
+*.exe binary
+*.dll binary
+*.sys binary
+*.ico binary
+*.png binary
+*.bmp binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.lnk binary
+*.pow binary
+*.skin binary
+*.skin7 binary
+*.apbx binary
+
+# UTF-16 .reg files - do not convert these.
+**/Intel/Tweaks*/*.reg -text
