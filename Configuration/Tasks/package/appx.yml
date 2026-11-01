@@ -38,7 +38,7 @@ actions:
  - !appx: {name: '*PinningConfirmationDialog*', type: family}
  - !appx: {name: '*PowerAutomate*', type: family}
  - !appx: {name: '*QuickAssist*', type: family}
- - !appx: {name: '*SecHealthUI*', type: family}
+ - !appx: {name: '*SecHealthUI*', type: family, option: "disable-defender"}
  - !appx: {name: '*SecureAssessmentBrowser*', type: family}
  - !appx: {name: '*SkypeApp*', type: family}
  - !appx: {name: '*Solit*', type: family}

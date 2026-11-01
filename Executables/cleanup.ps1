@@ -1,9 +1,11 @@
+# Windows Update holds SoftwareDistribution open
+Stop-Service -Name wuauserv, bits -Force -ErrorAction SilentlyContinue
+
 $foldersToRemove = @(
     "CbsTemp",
     "Logs",
     "SoftwareDistribution",
     "System32\LogFiles",
-    "System32\LogFiles\WMI",
     "System32\SleepStudy",
     "System32\sru",
     "System32\WDI\LogFiles",
@@ -18,7 +20,8 @@ $foldersToRemove = @(
 foreach ($folderName in $foldersToRemove) {
     $folderPath = Join-Path $env:SystemRoot $folderName
     if (Test-Path $folderPath) {
-        Remove-Item -Path "$folderPath\*" -Force -Recurse | Out-Null
+        # locked files (CBS.log, in-use ETL logs) are expected, skip them silently
+        Remove-Item -Path "$folderPath\*" -Force -Recurse -ErrorAction SilentlyContinue
     }
 }
 

@@ -1,5 +1,3 @@
-cd Executables
-
 @if exist "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" echo del /q /f "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" & del /q /f "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml"
 
 copy /y "Layout.xml" "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml"
@@ -32,8 +30,9 @@ for /f "usebackq tokens=2 delims=\" %%A in (`reg query "HKEY_USERS" ^| findstr /
 
 copy /y "LayoutUser.xml" "%SYSTEMDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
 
-REM Note: Deprecated on newer versions of Windows 11
-PowerShell -NoP -C "Import-StartLayout -LayoutPath '%SYSTEMDRIVE%\Windows\StartMenuLayout.xml' -MountPath $env:SystemDrive\\"
+REM Import-StartLayout only accepts XML layouts on Windows 10; Windows 11 rejects them
+for /f "tokens=6 delims=[]. " %%a in ('ver') do set "build=%%a"
+if %build% lss 22000 PowerShell -NoP -C "Import-StartLayout -LayoutPath '%SYSTEMDRIVE%\Windows\StartMenuLayout.xml' -MountPath $env:SystemDrive\\"
 
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "StartLayoutFile" /t REG_SZ /d "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" /f

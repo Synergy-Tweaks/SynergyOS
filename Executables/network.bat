@@ -1,14 +1,5 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
-netsh int ip reset >nul 2>&1
-netsh interface ipv4 reset >nul 2>&1
-netsh interface ipv6 reset >nul 2>&1
-netsh interface tcp reset >nul 2>&1
-netsh winsock reset >nul 2>&1
-netsh winsock reset catalog >nul 2>&1
-ipconfig /release >nul 2>&1
-ipconfig /renew >nul 2>&1
-ipconfig /flushdns >nul 2>&1
 
 :: disable nagle's algorithm
 for /f "tokens=*" %%i in ('powershell -NoProfile -Command "(Get-CimInstance -ClassName Win32_NetworkAdapter | Select-Object -ExpandProperty GUID | Where-Object { $_ -like '*{*' })"') do (
@@ -31,7 +22,6 @@ for /f %%a in ('Reg query "HKLM\SYSTEM\CurrentControlSet\Control\Class\{4d36e972
     Reg add %%a /v "EnableGreenEthernet" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"
     Reg add %%a /v "EnablePME" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"
     Reg add %%a /v "GigaLite" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"
-    Reg add %%a /v "*JumboPacket" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"  
     Reg add %%a /v "*LsoV2IPv4" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"
     Reg add %%a /v "*LsoV2IPv6" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"
     Reg add %%a /v "PowerSavingMode" /t Reg_SZ /d "0" /f >> "%TEMP%\synergyos-network.log"  

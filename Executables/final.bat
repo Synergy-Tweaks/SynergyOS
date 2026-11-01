@@ -16,7 +16,6 @@ for /f "tokens=1" %%a in ('Reg query "HKCU\SOFTWARE\Microsoft\Windows\CurrentVer
 :: write cache policy
 for /f "tokens=*" %%i in ('reg query "HKLM\SYSTEM\CurrentControlSet\Enum\SCSI" ^| findstr "HKEY"') do (
     for /f "tokens=*" %%a in ('reg query "%%i" ^| findstr "HKEY"') do (
-        Reg add "%%a\Device Parameters\Disk" /v CacheIsPowerProtected /t REG_DWORD /d 1 /f
         Reg add "%%a\Device Parameters\Disk" /v UserWriteCacheSetting /t REG_DWORD /d 1 /f
     )
 )
@@ -81,10 +80,6 @@ Reg add "HKLM\SYSTEM\CurrentControlSet\Control" /v "SvcHostSplitThresholdInKB" /
 :: disable search indexing
 sc stop wsearch
 sc config wsearch start=disabled
-
-:: second pass
-sc stop sysmain
-sc config sysmain start=disabled
 
 :: disable FTH
 reg add "HKLM\Software\Microsoft\FTH" /v Enabled /t REG_DWORD /d "0" /f

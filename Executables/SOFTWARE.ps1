@@ -281,20 +281,30 @@ foreach ($a in $vcredists.GetEnumerator()) {
 }
 
 # 7-Zip
-# The download URL is scraped from the 7-zip.org homepage, so the scrape result has
-# to be validated before it is used - previously a layout change upstream produced an
-# empty/multi-value match that was concatenated into a junk URL and executed anyway.
-$website = 'https://7-zip.org/'
+# Resolved through the GitHub releases API (ip7z/7zip, official mirror) instead of
+# scraping the 7-zip.org homepage, which broke on layout changes. The asset digest
+# provided by GitHub is used for SHA-256 verification.
 $7zipArch = ('x64', 'arm64')[$arm]
-$7zipLink = @((Invoke-WebRequest $website -UseBasicParsing).Links.href | Where-Object { $_ -like "a/7z*-$7zipArch.exe" })
+$7zipMeta = "$tempDir\7zip-release.json"
+$7zipAsset = $null
 
-if ($7zipLink.Count -ne 1) {
-    Write-Error "Could not determine the 7-Zip download URL ($($7zipLink.Count) candidates). Skipping 7-Zip."
+if (Get-RemoteFile -Url 'https://api.github.com/repos/ip7z/7zip/releases/latest' -Path $7zipMeta -Name '7-Zip release metadata') {
+    try {
+        $release = Get-Content -LiteralPath $7zipMeta -Raw | ConvertFrom-Json -ErrorAction Stop
+        $7zipAsset = @($release.assets | Where-Object { $_.name -match "^7z\d+-$7zipArch\.exe$" })
+    }
+    catch {
+        Write-Error '7-Zip release metadata could not be read.'
+    }
+}
+
+if ($7zipAsset.Count -ne 1) {
+    Write-Error "Could not determine the 7-Zip installer ($($7zipAsset.Count) candidates). Skipping 7-Zip."
 }
 else {
-    $download = $website + $7zipLink[0]
-    Write-Output "Downloading 7-Zip..."
-    if (Get-RemoteFile -Url $download -Path "$tempDir\7zip.exe" -Name "7-Zip") {
+    $sha = if ([string]$7zipAsset[0].digest -match '^sha256:([A-Fa-f0-9]{64})$') { $Matches[1].ToUpperInvariant() }
+    Write-Output "Downloading 7-Zip $($release.tag_name)..."
+    if (Get-RemoteFile -Url $7zipAsset[0].browser_download_url -Path "$tempDir\7zip.exe" -Name '7-Zip' -Sha256 $sha) {
         Write-Output "Installing 7-Zip..."
         Start-Process -FilePath "$tempDir\7zip.exe" -WindowStyle Hidden -ArgumentList '/S' -Wait
     }
