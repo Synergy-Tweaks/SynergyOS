@@ -71,3 +71,13 @@ Want to help fix a bug or build a new feature? Open the [Issues](https://github.
 ## Contributors
 
 <a href="https://github.com/Synergy-Tweaks/SynergyOS/graphs/contributors" target="_blank"><img src="https://contrib.rocks/image?repo=Synergy-Tweaks/SynergyOS&columns=18" alt="Avatars of all contributors"></a>
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=kwanteks%2Fsynergyos&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=kwanteks/synergyos&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=kwanteks/synergyos&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=kwanteks/synergyos&type=date&legend=top-left" />
+ </picture>
+</a>
