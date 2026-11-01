@@ -58,7 +58,7 @@ Want to help fix a bug or build a new feature? Open the [Issues](https://github.
 
 ## Credits
 
-- **Lead Developers:** Kwanteks, Bry1k & Chr
+- **Lead Developers:** Kwanteks, Bry1k & ~~Chr~~ (no longer working on this project)
 - **Framework:** [Amelabs / AME Wizard](https://amelabs.net)
 
 ## Connect
