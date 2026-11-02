@@ -46,8 +46,9 @@ actions:
  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize', value: 'SystemUsesLightTheme', type: REG_DWORD, data: '0', oobe: true}
  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize', value: 'EnableTransparency', type: REG_DWORD, data: '0', oobe: true}
 
- # disable task view button
+ # disable task view button (HKCU + default profile for ISO/OOBE)
  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowTaskViewButton', type: REG_DWORD, data: '0'}
+ - !registryValue: {path: 'HKU\.DEFAULT\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'ShowTaskViewButton', type: REG_DWORD, data: '0'}
 
  # remove security health from startup
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'SecurityHealth', operation: delete, iso: true, option: "disable-defender"}
@@ -75,11 +76,13 @@ actions:
  # set ps1 files to open by default
  - !registryValue: {path: 'HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command', value: '@', type: REG_SZ, data: '"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -File "%1"'}
 
- # set taskbar alignment to left
- -  !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'TaskbarAl', type: REG_DWORD, data: '0'}
+ # set taskbar alignment to left (HKCU + default profile)
+ - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'TaskbarAl', type: REG_DWORD, data: '0'}
+ - !registryValue: {path: 'HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'TaskbarAl', type: REG_DWORD, data: '0'}
 
- # hide search box
+ # hide search box (HKCU + default profile)
  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'SearchboxTaskbarMode', type: REG_DWORD, data: '0'}
+ - !registryValue: {path: 'HKU\.DEFAULT\SOFTWARE\Microsoft\Windows\CurrentVersion\Search', value: 'SearchboxTaskbarMode', type: REG_DWORD, data: '0'}
 
  # hide recommended section in start menu (can run during ISO injection)
  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer', value: 'HideRecommendedSection', type: REG_DWORD, data: '1', iso: true}

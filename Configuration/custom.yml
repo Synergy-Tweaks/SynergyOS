@@ -10,9 +10,9 @@ actions:
  - !cmd: {command: 'reg import RunAsTI.reg', exeDir: true, wait: true, runas: currentUserElevated}
 
  - !writeStatus {status: "Copying Files"}
- - !cmd: {exeDir: true, command: 'xcopy "Windows" "%windir%" /E /I /Y', wait: true}
- - !cmd: {exeDir: true, command: 'xcopy "SOS" "%systemdrive%\SOS" /E /I /Y', wait: true}
- - !cmd: {exeDir: true, command: 'xcopy "User Account Pictures" "%ProgramData%\Microsoft\User Account Pictures" /E /I /Y', wait: true}
+ - !cmd: {exeDir: true, command: 'xcopy "Windows" "%windir%" /E /I /Y', wait: true, oobe: true}
+ - !cmd: {exeDir: true, command: 'xcopy "SOS" "%systemdrive%\SOS" /E /I /Y', wait: true, oobe: true}
+ - !cmd: {exeDir: true, command: 'xcopy "User Account Pictures" "%ProgramData%\Microsoft\User Account Pictures" /E /I /Y', wait: true, oobe: true}
 
  - !writeStatus {status: "Disabling Windows Defender"}
  - !powerShell: {command: '.\DisableDefender.ps1', exeDir: true, wait: true, option: "disable-defender"}
@@ -69,16 +69,15 @@ actions:
  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'WallPaper', type: REG_SZ, data: '%SystemRoot%\Web\Wallpaper\sos.png', oobe: true}
  - !powerShell: {command: '.\wallpaper.ps1 -Mode Desktop -ImagePath $env:systemroot\Web\Wallpaper\sos.png', exeDir: true, wait: true, runas: currentUserElevated, oobe: true}
  - !powerShell: {command: '.\wallpaper.ps1 -Mode LockScreen -ImagePath $env:systemroot\Web\Wallpaper\sos.png', exeDir: true, wait: true, runas: currentUserElevated, oobe: true}
+ # ISO OOBE only — re-apply wallpaper after first logon (Revi-style RunOnce)
+ - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce', value: 'SynergyWallpaperStartup', type: REG_SZ, data: 'cmd /c "%SystemRoot%\Web\Wallpaper\WallpaperStartup.cmd"', oobe: only}
 
+ # Start/taskbar — LayoutModification.json + cache clear (no LayoutXMLPath during ISO inject)
  - !writeStatus {status: "Configuring Taskbar"}
- - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer', value: 'LayoutXMLPath', type: REG_SZ, data: '%SystemRoot%\TaskbarLayout.xml', iso: true, oobe: true}
- - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer', value: 'StartLayoutFile', type: REG_SZ, data: '%SystemRoot%\StartMenuLayout.xml', iso: true, oobe: true}
-
  - !cmd: {command: '"startmen.cmd"', runas: trustedInstaller, exeDir: true, wait: true, oobe: true}
- - !cmd:
-     command: 'reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" /f'
-     runas: currentUserElevated
-     oobe: true
+ - !appx: {operation: clearCache, name: '*StartMenuExperienceHost*', oobe: true}
+ - !appx: {operation: clearCache, name: '*Client.CBS*', oobe: true}
+ - !appx: {operation: clearCache, name: '*Windows.Search*', oobe: true}
 
  - !writeStatus {status: 'Configuring Settings'}
  - !task {path: 'Tasks\registry\settings.yml'}

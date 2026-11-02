@@ -1,39 +1,39 @@
-@if exist "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" echo del /q /f "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" & del /q /f "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml"
+@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+set "SRC=%~dp0"
 
-copy /y "Layout.xml" "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml"
-copy /y "LayoutTaskbar.xml" "%SYSTEMDRIVE%\Windows\TaskbarLayout.xml"
+mkdir "%SYSTEMDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\Shell" 2>nul
+copy /y "%SRC%LayoutUser.xml" "%SYSTEMDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml" >nul
+copy /y "%SRC%LayoutModification.json" "%SYSTEMDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.json" >nul
 
-@echo OFF
+REM Real users + AME OOBE hives
 for /f "usebackq tokens=2 delims=\" %%A in (`reg query "HKEY_USERS" ^| findstr /r /x /c:"HKEY_USERS\\S-.*" /c:"HKEY_USERS\\AME_UserHive_[^_]*"`) do (
-	REM If the "Volatile Environment" key exists, that means it is a proper user. Built in accounts/SIDs don't have this key.
-	reg query "HKEY_USERS\%%A" | findstr /c:"Volatile Environment" /c:"AME_UserHive_" > NUL 2>&1
-		if not errorlevel 1 (
-			for /f "usebackq tokens=3* delims= " %%B in (`reg query "HKU\%%A\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v "Local AppData" 2^>^&1 ^| findstr /R /X /C:".*Local AppData[ ]*REG_SZ[ ].*"`) do (
-				echo copy /y "LayoutUser.xml" "%%C\Microsoft\Windows\Shell\LayoutModification.xml"
-				copy /y "LayoutUser.xml" "%%C\Microsoft\Windows\Shell\LayoutModification.xml"
-			)
-			echo reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /f
-			reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /f
-			echo reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "LockedStartLayout" /t REG_DWORD /d 0 /f
-			reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "LockedStartLayout" /t REG_DWORD /d 0 /f
-			echo reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "StartLayoutFile" /t REG_SZ /d "C:\Windows\StartMenuLayout.xml" /f
-			reg add "HKU\%%A\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "StartLayoutFile" /t REG_SZ /d "C:\Windows\StartMenuLayout.xml" /f
-			for /f "usebackq delims=" %%C in (`reg query "HKU\%%A\SOFTWARE\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount" ^| findstr /c:"start.tilegrid"`) do (
-				echo reg delete "%%C" /f
-				reg delete "%%C" /f
+	reg query "HKEY_USERS\%%A" | findstr /c:"Volatile Environment" /c:"AME_UserHive_" >nul 2>&1
+	if not errorlevel 1 (
+		reg delete "HKU\%%A\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" /f >nul 2>&1
+		reg delete "HKU\%%A\Software\Microsoft\Windows\CurrentVersion\Start" /v "Config" /f >nul 2>&1
+
+		for /f "usebackq tokens=3* delims= " %%B in (`reg query "HKU\%%A\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v "AppData" 2^>nul ^| findstr /R /X /C:".*AppData[ ]*REG_SZ[ ].*"`) do (
+			del /f /q "%%C\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\*" >nul 2>&1
+		)
+
+		for /f "usebackq tokens=3* delims= " %%B in (`reg query "HKU\%%A\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" /v "Local AppData" 2^>nul ^| findstr /R /X /C:".*Local AppData[ ]*REG_SZ[ ].*"`) do (
+			mkdir "%%C\Microsoft\Windows\Shell" 2>nul
+			copy /y "%SRC%LayoutUser.xml" "%%C\Microsoft\Windows\Shell\LayoutModification.xml" >nul
+			copy /y "%SRC%LayoutModification.json" "%%C\Microsoft\Windows\Shell\LayoutModification.json" >nul
+
+			for /f "usebackq delims=" %%D in (`dir /b "%%C\Packages" /a:d 2^>nul ^| findstr /c:"Microsoft.Windows.StartMenuExperienceHost"`) do (
+				for /f "usebackq delims=" %%E in (`dir /b "%%C\Packages\%%D\LocalState" /a:-d 2^>nul ^| findstr /R /c:"start.\.bin" /c:"start\.bin"`) do (
+					del /q /f "%%C\Packages\%%D\LocalState\%%E" >nul 2>&1
+				)
 			)
 		)
+
+		for /f "usebackq delims=" %%C in (`reg query "HKU\%%A\SOFTWARE\Microsoft\Windows\CurrentVersion\CloudStore\Store\Cache\DefaultAccount" 2^>nul ^| findstr /c:"start.tilegrid"`) do (
+			reg delete "%%C" /f >nul 2>&1
+		)
+	)
 )
 
-
-@echo ON
-
-copy /y "LayoutUser.xml" "%SYSTEMDRIVE%\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml"
-
-REM Import-StartLayout only accepts XML layouts on Windows 10; Windows 11 rejects them
-for /f "tokens=6 delims=[]. " %%a in ('ver') do set "build=%%a"
-if %build% lss 22000 PowerShell -NoP -C "Import-StartLayout -LayoutPath '%SYSTEMDRIVE%\Windows\StartMenuLayout.xml' -MountPath $env:SystemDrive\\"
-
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /f
-reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v "StartLayoutFile" /t REG_SZ /d "%SYSTEMDRIVE%\Windows\StartMenuLayout.xml" /f
-reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer" /v "LayoutXMLPath" /t REG_SZ /d "%SYSTEMDRIVE%\Windows\TaskbarLayout.xml" /f
+endlocal
+exit /b 0
