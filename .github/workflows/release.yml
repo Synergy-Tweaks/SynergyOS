@@ -1,0 +1,66 @@
+name: Release SynergyOS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+
+      - name: Read playbook version
+        id: version
+        shell: bash
+        run: |
+          version="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' playbook.conf | head -n 1)"
+          if [ -z "$version" ]; then
+            echo "::error::Could not read <Version> from playbook.conf"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Package playbook
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full
+          7z a -t7z -mx=9 -mhe=on -pmalte SynergyOS.apbx \
+            .github Configuration docs Executables Images \
+            playbook.conf playbook.png readme.md
+
+      - name: Create checksums
+        shell: bash
+        run: sha256sum SynergyOS.apbx > SHA256SUMS.txt
+
+      - name: Publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "::error::Release $VERSION already exists"
+            exit 1
+          fi
+
+          gh release create "$VERSION" SynergyOS.apbx SHA256SUMS.txt \
+            --target "$GITHUB_SHA" \
+            --title "SynergyOS $VERSION" \
+            --generate-notes \
+            --latest
+
+          gh release view "$VERSION" --json body -q .body > release-body.md
+          {
+            echo
+            echo "### SHA-256"
+            echo '```'
+            cat SHA256SUMS.txt
+            echo '```'
+          } >> release-body.md
+          gh release edit "$VERSION" --notes-file release-body.md
