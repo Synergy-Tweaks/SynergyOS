@@ -89,7 +89,7 @@ actions:
  - !task {path: 'Tasks\services.yml'}
 
  - !writeStatus {status: "Configuring Visuals"}
- - !cmd: {command: '"visuals.bat"', runas: trustedInstaller, exeDir: true, wait: true, oobe:only} 
+ - !cmd: {command: '"visuals.bat"', runas: trustedInstaller, exeDir: true, wait: true, oobe: true} 
 
  - !writeStatus {status: "Optimizing PowerShell"}
  - !run:
