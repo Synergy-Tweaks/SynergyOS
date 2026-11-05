@@ -69,14 +69,14 @@ actions:
  - !registryValue: {path: 'HKCU\Control Panel\Desktop', value: 'WallPaper', type: REG_SZ, data: '%SystemRoot%\Web\Wallpaper\sos.png', oobe: true}
  - !powerShell: {command: '.\wallpaper.ps1 -Mode Desktop -ImagePath $env:systemroot\Web\Wallpaper\sos.png', exeDir: true, wait: true, runas: currentUserElevated, oobe: true}
  - !powerShell: {command: '.\wallpaper.ps1 -Mode LockScreen -ImagePath $env:systemroot\Web\Wallpaper\sos.png', exeDir: true, wait: true, runas: currentUserElevated, oobe: true}
- # ISO OOBE only — dark theme + wallpaper on first real-user logon (Sapphire/Revi RunOnce catch-up)
+ # ISO OOBE only — dark theme + wallpaper on first real-user logon
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce', value: 'SynergyWallpaperStartup', type: REG_SZ, data: 'cmd /c "%SystemRoot%\Web\Wallpaper\WallpaperStartup.cmd"', oobe: only}
 
  # Start/taskbar — LayoutModification.json + Sapphire-style Taskband Favorites clear
  - !writeStatus {status: "Configuring Taskbar"}
  - !cmd: {command: '"startmen.cmd"', runas: trustedInstaller, exeDir: true, wait: true, oobe: true}
  - !powerShell: {command: '.\StartMenuCache.ps1', exeDir: true, wait: true, runas: currentUserElevated, oobe: true, errorAction: Ignore}
- # ISO OOBE only — clear Taskband Favorites on first real-user logon (Sapphire RunOnce pattern)
+ # ISO OOBE only — clear Taskband Favorites on first real-user logon
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce', value: 'SynergyTaskbarStartup', type: REG_SZ, data: 'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%SystemRoot%\StartMenuCache.ps1"', oobe: only}
  - !appx: {operation: clearCache, name: '*StartMenuExperienceHost*', oobe: true}
  - !appx: {operation: clearCache, name: '*Client.CBS*', oobe: true}

@@ -1,0 +1,1 @@
+Power Run lets you run files at the highest permission possible. 
