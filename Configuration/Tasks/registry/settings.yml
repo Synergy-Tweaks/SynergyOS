@@ -100,6 +100,9 @@ actions:
  # Win32Prio (can run during ISO injection)
  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '36', iso: true}
 
+ # Disable WPBT / OEM firmware binaries (stops OEM "bloat" downloads at boot)
+ - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', type: REG_DWORD, data: '1', iso: true}
+
  # Disable opening gamebar when pressing the xbox button on an xbox controller
  - !registryValue: {path: 'HKCU\Software\Microsoft\GameBar', value: 'UseNexusForGameBarEnabled', type: REG_DWORD, data: '0'}
  # disable opening gamebarr when connecting xbox controller
@@ -137,6 +140,9 @@ actions:
   
  - !writeStatus {status: "Disabling Devices"}
  - !powerShell: {command: '.\devices.ps1', runas: trustedInstaller, exeDir: true, wait: true}
+
+ - !writeStatus {status: "Disabling Device Power Savings"}
+ - !powerShell: {command: '.\Disable Device Power Savings.ps1', runas: trustedInstaller, exeDir: true, wait: true}
 
  - !writeStatus {status: "Disabling Power Saving"}
  - !cmd: {command: '"power.bat"', runas: trustedInstaller, exeDir: true, wait: true}
