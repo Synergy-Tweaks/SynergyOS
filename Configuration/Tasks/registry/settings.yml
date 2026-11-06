@@ -141,8 +141,5 @@ actions:
  - !writeStatus {status: "Disabling Devices"}
  - !powerShell: {command: '.\devices.ps1', runas: trustedInstaller, exeDir: true, wait: true}
 
- - !writeStatus {status: "Disabling Device Power Savings"}
- - !powerShell: {command: '.\Disable Device Power Savings.ps1', runas: trustedInstaller, exeDir: true, wait: true}
-
  - !writeStatus {status: "Disabling Power Saving"}
  - !cmd: {command: '"power.bat"', runas: trustedInstaller, exeDir: true, wait: true}
