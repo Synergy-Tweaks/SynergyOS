@@ -119,6 +119,12 @@ Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.bat\ShellNew" /v "NullFile" /t REG
 Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.reg\ShellNew" /v "ItemName" /t REG_EXPAND_SZ /d "@C:\Windows\regedit.exe,-309" /f 
 Reg add "HKEY_LOCAL_MACHINE\Software\Classes\.reg\ShellNew" /v "NullFile" /t REG_SZ /d "" /f 
 
+:: restore text input and background apps in case an older build disabled them
+Reg delete "HKLM\SOFTWARE\Microsoft\Input" /v "InputServiceEnabled" /f >NUL 2>nul
+Reg delete "HKLM\SOFTWARE\Microsoft\Input" /v "InputServiceEnabledForCCI" /f >NUL 2>nul
+Reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Search" /v "BackgroundAppGlobalToggle" /f >NUL 2>nul
+Reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications" /v "GlobalUserDisabled" /f >NUL 2>nul
+
 :: register .pow as a file type
 Reg add "HKCR\.pow" /ve /t REG_SZ /d "Power Plan" /f
 Reg add "HKCR\.pow" /v "FriendlyTypeName" /t REG_SZ /d "Power Plan" /f
