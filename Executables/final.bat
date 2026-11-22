@@ -2,7 +2,7 @@
 SETLOCAL ENABLEDELAYEDEXPANSION
 
 :: clear pinned taskbar shortcuts
-del /f /q "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar*"
+del /f /q "%AppData%\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\*"
 
 :: remove onedrive leftover shortcut from file explorer sidebar
 Reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
@@ -36,7 +36,7 @@ bcdedit /deletevalue useplatformtick
 bcdedit /set bootmenupolicy Legacy
 
 :: disable DMA remapping
-for /f %%i in ('Reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services" /s /f DmaRemappingCompatible ^| find /i "Services\" ') do (
+for /f "delims=" %%i in ('Reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services" /s /f DmaRemappingCompatible ^| findstr "HKEY"') do (
 	Reg add "%%i" /v "DmaRemappingCompatible" /t REG_DWORD /d "0" /f
 )
 
@@ -126,10 +126,10 @@ Reg add "HKLM\SOFTWARE\Microsoft\Input" /v "InputServiceEnabledForCCI" /t REG_DW
 Reg add "HKLM\SYSTEM\CurrentControlSet\Services\TextInputManagementService\Parameters" /v "ServiceDll" /t REG_EXPAND_SZ /d "%SystemRoot%\System32\MSCTF.DLL" /f
 
 :: register .pow as a file type
-Reg add "HKCR\.pow" /v "" /t REG_SZ /d "Power Plan" /f
+Reg add "HKCR\.pow" /ve /t REG_SZ /d "Power Plan" /f
 Reg add "HKCR\.pow" /v "FriendlyTypeName" /t REG_SZ /d "Power Plan" /f
-Reg add "HKCR\.pow\DefaultIcon" /v "" /t REG_EXPAND_SZ /d "%SystemRoot%\System32\powercfg.cpl,-202" /f
-Reg add "HKCR\.pow\shell\Import\command" /v "" /t REG_SZ /d "powercfg /import \"%1\"" /f
+Reg add "HKCR\.pow\DefaultIcon" /ve /t REG_EXPAND_SZ /d "%SystemRoot%\System32\powercfg.cpl,-202" /f
+Reg add "HKCR\.pow\shell\Import\command" /ve /t REG_SZ /d "powercfg /import \"%%1\"" /f
 
 :: remove Microsoft Edge from task manager startup
 for /f "tokens=1" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /f "MicrosoftEdgeAutoLaunch*" /v ^| findstr /i "MicrosoftEdgeAutoLaunch"') do (

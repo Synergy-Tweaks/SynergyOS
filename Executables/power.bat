@@ -15,7 +15,7 @@ for %%i in (
   WdfDirectedPowerTransitionEnable 
   EnableIdlePowerManagement 
   IdleInWorkingState
-) do for /f %%a in ('Reg query "HKLM\SYSTEM\CurrentControlSet\Enum" /s /f "%%i"^| findstr "HKEY"') do Reg add "%%a" /v "%%i" /t REG_DWORD /d "0" /f  
+) do for /f "delims=" %%a in ('Reg query "HKLM\SYSTEM\CurrentControlSet\Enum" /s /f "%%i"^| findstr "HKEY"') do Reg add "%%a" /v "%%i" /t REG_DWORD /d "0" /f  
 
 powercfg /h off
 

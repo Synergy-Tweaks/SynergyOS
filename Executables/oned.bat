@@ -50,7 +50,7 @@ for /f "usebackq delims=" %%a in (`dir /b /a:d "%SystemDrive%\Users"`) do (
 	dir /b /a:-s "%SystemDrive%\Users\%%a\OneDrive" | findstr /R /c:"." > NUL 2>&1 || rmdir /q /s "%SystemDrive%\Users\%%a\OneDrive"
 )
 
-for /f "usebackq delims=" %%e in (`reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SyncRootManager" ^| findstr /i /c:"OneDrive"`) do echo reg delete "%%e" /f & reg delete "%%e" /f
+for /f "usebackq delims=" %%e in (`reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\SyncRootManager" ^| findstr /i /c:"OneDrive"`) do (echo reg delete "%%e" /f & reg delete "%%e" /f)
 
 for /f "usebackq tokens=1* delims=\" %%A in (`schtasks /query /fo list ^| findstr /c:"\OneDrive Reporting Task" /c:"\OneDrive Standalone Update Task"`) do (
 	schtasks /delete /tn "%%B" /f

@@ -99,7 +99,6 @@ set "PMIN="
 set "PMAX="
 
 if /i "!PTYPE!"=="enum" goto SetParamEnum
-if /i "!PTYPE!"=="edit" goto :eof
 if not defined PTYPE goto SetParamEnum
 
 for /f "tokens=3" %%m in ('reg query "%FP%" /v min 2^>nul ^| findstr /i "REG_SZ"') do set "PMIN=%%m"
