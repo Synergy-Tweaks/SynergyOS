@@ -40,9 +40,8 @@ for /f %%i in ('Reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services"
 	Reg add "%%i" /v "DmaRemappingCompatible" /t REG_DWORD /d "0" /f
 )
 
-:: configure MMCSSS
+:: configure MMCSS
 Reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "SystemResponsiveness" /t REG_DWORD /d "10" /f
-Reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "NetworkThrottlingIndex" /t REG_DWORD /d "10" /f
 Reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile" /v "NoLazyMode" /t REG_DWORD /d "1" /f
 
 

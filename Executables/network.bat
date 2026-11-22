@@ -4,14 +4,6 @@ setlocal EnableExtensions EnableDelayedExpansion
 set "NICCLASS=HKLM\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}"
 set "VIRTUAL=microsoft miniport virtual kernel debug bluetooth teredo tunnel loopback tap- openvpn wireguard vmware virtualbox hyper-v npcap ras async pppoe wintun zerotier hamachi tailscale nordlynx"
 
-:: Discovery / topology bindings off
-powershell.exe -NoProfile -Command "Disable-NetAdapterBinding -Name '*' -ComponentID ms_lldp,ms_lltdio,ms_implat,ms_rspndr -ErrorAction SilentlyContinue" >nul 2>&1
-powershell.exe -NoProfile -Command "Set-NetOffloadGlobalSetting -PacketCoalescingFilter Disabled -ErrorAction SilentlyContinue" >nul 2>&1
-powershell.exe -NoProfile -Command "Set-NetOffloadGlobalSetting -ReceiveSegmentCoalescing Disabled -ErrorAction SilentlyContinue" >nul 2>&1
-
-:: Default PnP: do not allow Windows to turn the device off
-reg add "HKLM\SYSTEM\CurrentControlSet\Services\NDIS\Parameters" /v "DefaultPnPCapabilities" /t REG_DWORD /d 24 /f >nul 2>&1
-
 for /f "delims=" %%n in ('reg query "%NICCLASS%" 2^>nul ^| findstr /r /c:"\\[0-9][0-9][0-9][0-9]$"') do (
 	call :Adapter "%%n"
 )
@@ -35,24 +27,15 @@ set "APRESENT="
 for /f "usebackq delims=" %%s in (`powershell.exe -NoProfile -Command "$a=Get-NetAdapter -InterfaceDescription $env:ADESC -EA SilentlyContinue | Select-Object -First 1; if($a){'1'}"`) do set "APRESENT=%%s"
 if not defined APRESENT goto :eof
 
-reg add "%AKEY%" /v "PnPCapabilities" /t REG_DWORD /d 24 /f >nul 2>&1
-
 :: Standard Settings
 call :SetParam "*EEE"                         EXACT 0
 call :SetParam "*FlowControl"                 EXACT 0
-call :SetParam "*InterruptModeration"         EXACT 0
-call :SetParam "*JumboPacket"                 CAP 1514
-call :SetParam "*LsoV2IPv4"                   EXACT 0
-call :SetParam "*LsoV2IPv6"                   EXACT 0
-call :SetParam "*RscIPv4"                     EXACT 0
-call :SetParam "*RscIPv6"                     EXACT 0
 call :SetParam "*RSS"                         EXACT 1
 call :SetParam "*ReceiveBuffers"              CAP 1024
 call :SetParam "*TransmitBuffers"             CAP 512
 call :SetParam "*WakeOnMagicPacket"           EXACT 0
 call :SetParam "*WakeOnPattern"               EXACT 0
 call :SetParam "*ModernStandbyWoLMagicPacket" EXACT 0
-call :SetParam "*PMARPOffload"                EXACT 0
 call :SetParam "*PMNSOffload"                 EXACT 0
 call :SetParam "*SelectiveSuspend"            EXACT 0
 call :SetParam "*DeviceSleepOnDisconnect"     EXACT 0
