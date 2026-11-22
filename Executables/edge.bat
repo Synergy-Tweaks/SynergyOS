@@ -16,7 +16,7 @@ for %%S in ("edgeupdate" "edgeupdatem" "MicrosoftEdgeElevationService") do (
 )
 
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$packages = @('Microsoft.MicrosoftEdge.Stable*','Microsoft.MicrosoftEdgeDevToolsClient*'); foreach ($p in $packages) { Get-AppxPackage -AllUsers -Name $p -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$packages = @('Microsoft.MicrosoftEdge.Stable*','Microsoft.MicrosoftEdgeDevToolsClient*'); foreach ($p in $packages) { Get-AppxPackage -AllUsers -Name $p -ErrorAction SilentlyContinue | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue }"
 
 
 if exist "%SystemDrive%\Users\Public\Desktop\Microsoft Edge.lnk" del /f /q "%SystemDrive%\Users\Public\Desktop\Microsoft Edge.lnk" 2>nul

@@ -16,7 +16,7 @@ if (Test-Path $FilePath) {
 
 Set-Content -Path $FilePath `
     -Value "Windows Registry Editor Version 5.00`r`n" `
-    -Encoding UTF8
+    -Encoding Unicode
 
 Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services" | ForEach-Object {
     $props = Get-ItemProperty $_.PSPath -ErrorAction SilentlyContinue
@@ -27,10 +27,10 @@ Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services" | ForEach-Object {
         if ($startValue -ge 0 -and $startValue -le 4) {
             Add-Content -Path $FilePath `
                 -Value "[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\$($_.PSChildName)]" `
-                -Encoding UTF8
+                -Encoding Unicode
             Add-Content -Path $FilePath `
                 -Value "`"Start`"=dword:0000000$startValue`r`n" `
-                -Encoding UTF8
+                -Encoding Unicode
         }
     }
 }
