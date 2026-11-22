@@ -33,7 +33,7 @@ actions:
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation', value: 'Model', type: REG_SZ, data: 'SYNERGYOS', iso: true}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation', value: 'Manufacturer', type: REG_SZ, data: 'Kwanteks', iso: true}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OEMInformation', value: 'SupportURL', type: REG_SZ, data: 'https://discord.gg/kwanteks', iso: true}
- - !run: {exe: 'label', args: '%systemdrive% SynergyOS'}
+ - !cmd: {command: 'label %systemdrive% SynergyOS', wait: true}
 
   # Set Registered Owner/Organization (shows in About Windows)
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion', value: 'RegisteredOwner', type: REG_SZ, data: 'SynergyOS', iso: true}
@@ -44,7 +44,7 @@ actions:
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'PromptOnSecureDesktop', type: REG_DWORD, data: '1', iso: true, option: "enable-uac"}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'ConsentPromptBehaviorAdmin', type: REG_DWORD, data: '5', iso: true, option: "enable-uac"}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'ValidateAdminCodeSignatures', type: REG_DWORD, data: '0', iso: true, option: "enable-uac"}
- - !cmd: {command: '"SOS\2. Configuration\UAC\Enable UAC (default).bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "enable-uac"}
+ - !cmd: {command: '"SOS\2. Main Configuration\UAC\Enable UAC (default).bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "enable-uac"}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'EnableLUA', type: REG_DWORD, data: '0', iso: true, option: "disable-uac"}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'PromptOnSecureDesktop', type: REG_DWORD, data: '0', iso: true, option: "disable-uac"}
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System', value: 'ConsentPromptBehaviorAdmin', type: REG_DWORD, data: '0', iso: true, option: "disable-uac"}
@@ -89,7 +89,7 @@ actions:
  - !task {path: 'Tasks\services.yml'}
 
  - !writeStatus {status: "Configuring Visuals"}
- - !cmd: {command: '"visuals.bat"', runas: trustedInstaller, exeDir: true, wait: true, oobe: true} 
+ - !cmd: {command: '"visuals.bat"', runas: currentUserElevated, exeDir: true, wait: true, oobe: true} 
 
  - !writeStatus {status: "Optimizing PowerShell"}
  - !run:
@@ -99,7 +99,7 @@ actions:
     weight: 50
 
  - !writeStatus {status: "Finalizing"}
- - !cmd: {command: '"final.bat"', exeDir: true, runas: trustedInstaller, wait: true}
+ - !cmd: {command: '"final.bat"', exeDir: true, runas: currentUserElevated, wait: true}
  - !cmd: {command: '"updhealth.bat"', exeDir: true, runas: trustedInstaller, wait: true}
  - !powerShell: {command: '.\cleanup.ps1', exeDir: true, runas: trustedInstaller, wait: true}
 

@@ -28,7 +28,7 @@ actions:
  - !taskKill: {name: "OneDriveStandaloneUpdater"}
  - !taskKill: {name: "OneDriveSetup"}
  - !taskKill: {name: "OneDrive*"}
- - !service: {name: "OneSyncSvc*", operation: delete, iso: true}
+ - !service: {name: "OneSyncSvc", operation: delete, iso: true}
 
  - !cmd: {command: '"oned.bat"', exeDir: true, runas: trustedInstaller, wait: true}
  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', value: 'OneDrive', operation: delete}
