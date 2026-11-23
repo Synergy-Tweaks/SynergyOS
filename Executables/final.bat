@@ -135,3 +135,4 @@ Reg add "HKCR\.pow\shell\Import\command" /v "" /t REG_SZ /d "powercfg /import \"
 for /f "tokens=1" %%i in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /f "MicrosoftEdgeAutoLaunch*" /v ^| findstr /i "MicrosoftEdgeAutoLaunch"') do (
   reg delete "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v "%%i" /f
 )
+exit /b 0
