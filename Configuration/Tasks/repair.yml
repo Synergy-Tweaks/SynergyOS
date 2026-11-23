@@ -1,0 +1,14 @@
+---
+title: Repair
+description: Undo the tweaks that earlier versions applied
+privilege: TrustedInstaller
+actions:
+
+ - !writeStatus {status: "Repairing earlier installs"}
+
+ # WebView2 runtime was blocked by these two policies
+ - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\EdgeUpdate', value: 'Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}', operation: delete, iso: true}
+ - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\EdgeUpdate', value: 'Update{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}', operation: delete, iso: true}
+
+ # NIC offloads, jumbo frame, discovery bindings, PnP override, missing WebView2 runtime
+ - !powerShell: {command: '.\repair.ps1', exeDir: true, wait: true}

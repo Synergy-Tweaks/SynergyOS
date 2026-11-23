@@ -62,6 +62,8 @@ actions:
  - !task {path: 'Tasks\package\appx.yml'}
  - !task {path: 'Tasks\package\components.yml'}
 
+ - !task {path: 'Tasks\repair.yml'}
+
  - !writeStatus {status: "Configuring Privacy"}
  - !task {path: 'Tasks\registry\privacy.yml'}
 
