@@ -10,7 +10,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$setupProcesses = Get-Ci
 
 powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-ScheduledTask -ErrorAction SilentlyContinue | Where-Object { $_.TaskName -like '*MicrosoftEdge*' } | Unregister-ScheduledTask -Confirm:$false -ErrorAction SilentlyContinue"
 
-for %%S in ("edgeupdate" "edgeupdatem" "MicrosoftEdgeElevationService") do (
+for %%S in ("MicrosoftEdgeElevationService") do (
     sc stop "%%~S" >nul 2>&1
     sc delete "%%~S" >nul 2>&1
 )
@@ -29,13 +29,12 @@ for %%F in ("%windir%\system32\Tasks\MicrosoftEdge*") do if exist "%%~fF" del /f
 for /d %%D in ("%windir%\system32\Tasks\MicrosoftEdge*") do if exist "%%~fD" rd /s /q "%%~fD" 2>nul
 
 if exist "%ProgramFiles(x86)%\Microsoft\Edge" rd /s /q "%ProgramFiles(x86)%\Microsoft\Edge" 2>nul
-if exist "%ProgramFiles(x86)%\Microsoft\EdgeUpdate" rd /s /q "%ProgramFiles(x86)%\Microsoft\EdgeUpdate" 2>nul
 if exist "%ProgramFiles(x86)%\Microsoft\EdgeCore" rd /s /q "%ProgramFiles(x86)%\Microsoft\EdgeCore" 2>nul
 
 reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "TaskbarMigratedBrowserPin" /f 2>nul
 reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge" /f 2>nul
-reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\Microsoft Edge Update" /f 2>nul
-reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate" /f 2>nul
+reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}" /f 2>nul
+reg delete "HKLM\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\ClientState\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}" /f 2>nul
 reg delete "HKLM\SOFTWARE\Microsoft\Active Setup\Installed Components\{9459C573-B17A-45AE-9F64-1857B5D58CEE}" /f 2>nul
 reg delete "HKCR\CLSID\{1FCBE96C-1697-43AF-9140-2897C7C69767}" /f 2>nul
 reg delete "HKCR\AppID\{1FCBE96C-1697-43AF-9140-2897C7C69767}" /f 2>nul
@@ -79,8 +78,6 @@ reg delete "HKCU\SOFTWARE\Classes\.webp\OpenWithProgids" /v "MSEdgeHTM" /f 2>nul
 reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ApplicationAssociationToasts" /v "MSEdgeHTM_microsoft-edge" /f 2>nul
 
 
-reg add "HKLM\Software\Policies\Microsoft\EdgeUpdate" /v "Install{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" /t REG_DWORD /d 0 /f 2>nul
-reg add "HKLM\Software\Policies\Microsoft\EdgeUpdate" /v "Update{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}" /t REG_DWORD /d 0 /f 2>nul
 reg add "HKLM\Software\Policies\Microsoft\EdgeUpdate" /v "Update{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}" /t REG_DWORD /d 0 /f 2>nul
 reg add "HKLM\Software\Policies\Microsoft\EdgeUpdate" /v "Update{2CD8A007-E189-409D-A2C8-9AF4EF3C72AA}" /t REG_DWORD /d 0 /f 2>nul
 reg add "HKLM\Software\Policies\Microsoft\EdgeUpdate" /v "Update{65C35B14-6C1D-4122-AC46-7148CC9D6497}" /t REG_DWORD /d 0 /f 2>nul

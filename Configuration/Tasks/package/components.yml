@@ -15,9 +15,6 @@ actions:
  - !taskKill: {name: "MicrosoftEdge*", option: "remove-edge"}
  - !taskKill: {name: "setup", pathContains: "\\Edge", option: "remove-edge"}
  - !taskKill: {name: "msedgewebview2", option: "remove-edge"}
- - !service: {name: "edgeupdate", operation: delete, option: "remove-edge", iso: true}
- - !service: {name: "edgeupdatem", operation: delete, option: "remove-edge", iso: true}
- - !service: {name: "MicrosoftEdgeElevationService", operation: delete, option: "remove-edge", iso: true} 
  - !cmd: {command: '"edge.bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "remove-edge"}
  - !appx: {name: 'Microsoft.MicrosoftEdge_8wekyb3d8bbwe', type: family, option: "remove-edge"}
  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Deprovisioned\Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe', operation: add, option: "remove-edge", iso: true}
