@@ -42,8 +42,7 @@ actions:
   - !service: {name: 'SharedAccess', operation: change, startup: 4, iso: true}
   - !service: {name: 'Spooler', operation: change, startup: 4, iso: true}
   - !service: {name: 'SSDPSRV', operation: change, startup: 4, iso: true}
-  - !service: {name: 'stisvc', operation: change, startup: 4, iso: true}
-  - !service: {name: 'sysmain', operation: change, startup: 4, iso: true}
+  - !service: {name: 'stisvc', operation: change, startup: 4, iso: true}]
   - !service: {name: 'TrkWks', operation: change, startup: 4, iso: true}
   - !service: {name: 'TroubleshootingSvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'UevAgentService', operation: change, startup: 4, iso: true}
