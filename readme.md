@@ -14,6 +14,8 @@
   <a href="https://github.com/Synergy-Tweaks/SynergyOS" target="_blank">🌐 GitHub Repository</a>
   •
   <a href="https://github.com/Synergy-Tweaks/SynergyOS/discussions" target="_blank">💬 Discussions</a>
+  •
+  <a href="https://github.com/Synergy-Tweaks/SynergyOS/blob/main/docs/Installation%20Guide.md" target="_blank">🛠️ Installation Guide</a>
 </p>
 
 **Developed by [Kwanteks](https://github.com/kwanteks) and [Bry1k](https://github.com/bry1k)**
