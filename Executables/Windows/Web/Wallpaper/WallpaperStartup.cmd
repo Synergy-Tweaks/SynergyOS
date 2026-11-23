@@ -1,5 +1,5 @@
 @echo off
-REM ISO OOBE RunOnce catch-up — dark theme + wallpaper after first real-user logon
+REM ISO OOBE RunOnce catch-up - dark theme + wallpaper after first real-user logon
 set "WP=%SystemRoot%\Web\Wallpaper"
 set "PS1=%WP%\wallpaper.ps1"
 set "IMG=%WP%\sos.png"
