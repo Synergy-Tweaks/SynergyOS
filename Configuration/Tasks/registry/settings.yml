@@ -120,11 +120,22 @@ actions:
  - !registryValue {path: 'HKCU\Control Panel\Mouse', value: 'MouseSensitivity', type: REG_SZ, data: '10'}
  - !registryValue {path: 'HKCU\Control Panel\Mouse', value: 'MouseSpeed', type: REG_SZ, data: '0'}
 
+ # enable MSI Mode for PCI devices
+ - !cmd:
+    command: >-
+      for %%C in (Win32_IDEController Win32_VideoController Win32_NetworkAdapter) do (
+        for /f "tokens=*" %%g in ('powershell -NoProfile -Command "Get-WmiObject -Class %%C -ErrorAction SilentlyContinue | Where-Object {$_.PNPDeviceID -like 'PCI\VEN_*'} | Select-Object -ExpandProperty PNPDeviceID"') do (
+          Reg add "HKLM\SYSTEM\CurrentControlSet\Enum\%%g\Device Parameters\Interrupt Management\MessageSignaledInterruptProperties" /v "MSISupported" /t REG_DWORD /d 1 /f
+        )
+      )
+    wait: true
+
  # remove gallery in file explorer
  - !registryKey: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Desktop\NameSpace_41040327\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}', operation: delete, iso: true}
+ 
  # Disable Memory Compression
  # Disable-MMAgent requires SysMain running (error 1058 otherwise); services.yml disables SysMain afterwards
- - !powerShell: {command: 'Set-Service SysMain -StartupType Manual; Start-Service SysMain -EA 0; Disable-MMAgent -MemoryCompression', wait: true}
+ - !powerShell: {command: 'Disable-MMAgent -MemoryCompression', wait: true}
 
  - !writeStatus {status: "Disabling Mitigations"}
  - !cmd: {command: '"mitigations.bat"', runas: trustedInstaller, exeDir: true, wait: true, option: "disable-mitigations"}
