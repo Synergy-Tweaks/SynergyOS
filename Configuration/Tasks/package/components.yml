@@ -111,3 +111,14 @@ actions:
  - !registryKey: {path: 'HKCR\ms-office-ai', operation: delete, iso: true}
  - !registryKey: {path: 'HKCR\ms-copilot', operation: delete, iso: true}
  - !registryKey: {path: 'HKCR\ms-clicktodo', operation: delete, iso: true}
+
+  # Remove Win32/system-level Copilot app (if registered in Uninstall keys)
+ - !powerShell:
+      runas: trustedInstaller
+      wait: true
+      command: >-
+        $e = Get-ItemProperty 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*','HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*','HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' -ErrorAction SilentlyContinue | Where-Object { $_.DisplayName -eq 'Copilot' -and $_.UninstallString } | Select-Object -First 1;
+        if ($e) {
+          Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.Name -match 'Copilot' } | Stop-Process -Force -ErrorAction SilentlyContinue;
+          $p = Start-Process -FilePath 'cmd.exe' -ArgumentList @('/d','/c', $e.UninstallString) -Wait -PassThru
+        }
