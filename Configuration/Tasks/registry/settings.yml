@@ -72,7 +72,7 @@ actions:
  - !run: {exe: 'schtasks', args: '/Change /TN "\Microsoft\Windows\Power Efficiency Diagnostics\AnalyzeSystem" /Disable'}
 
  # set ps1 files to open by default
- - !registryValue: {path: 'HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command', value: '@', type: REG_SZ, data: '"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -File "%1"'}
+ - !registryValue: {path: 'HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command', value: '', type: REG_SZ, data: '"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -File "%1"'}
 
  # set taskbar alignment to left (HKCU + default profile)
  - !registryValue: {path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced', value: 'TaskbarAl', type: REG_DWORD, data: '0'}

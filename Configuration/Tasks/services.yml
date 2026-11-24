@@ -23,14 +23,13 @@ actions:
   - !service: {name: 'lfsvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'lltdsvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'MapsBroker', operation: change, startup: 4, iso: true}
-  - !service: {name: 'NetBIOS', operation: change, startup: 4, iso: true}
   - !service: {name: 'NetBT', operation: change, startup: 4, iso: true}
   - !service: {name: 'NetTcpPortSharing', operation: change, startup: 4, iso: true}
   - !service: {name: 'onesyncsvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'pcasvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'PhoneSvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'PrintNotify', operation: change, startup: 4, iso: true}
-  - !service: {name: 'PrintWorkflowUserSv', operation: change, startup: 4, iso: true}
+  - !service: {name: 'PrintWorkflowUserSvc', operation: change, startup: 4, iso: true}
   - !service: {name: 'rspndr', operation: change, startup: 4, iso: true}
   - !service: {name: 'QWAVE', operation: change, startup: 4, iso: true}
   - !service: {name: 'RemoteAccess', operation: change, startup: 4, iso: true}
