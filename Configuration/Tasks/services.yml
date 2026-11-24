@@ -1,7 +1,5 @@
 ---
 title: Services
-description: Disable Services
-privilege: TrustedInstaller 
 actions:
   # iso: true — offline service disable during injection is more reliable than at first boot
   - !service: {name: 'AxInstSV', operation: change, startup: 4, iso: true}

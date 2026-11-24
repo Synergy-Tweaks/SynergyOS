@@ -1,7 +1,5 @@
 ---
 title: Repair
-description: Undo the tweaks that earlier versions applied
-privilege: TrustedInstaller
 actions:
 
  - !writeStatus {status: "Repairing earlier installs"}
