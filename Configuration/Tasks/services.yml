@@ -6,7 +6,7 @@ actions:
   # iso: true — offline service disable during injection is more reliable than at first boot
   - !service: {name: 'AxInstSV', operation: change, startup: 4, iso: true}
   - !service: {name: 'bam', operation: change, startup: 4, iso: true}
-  - !service: {name: 'BcastDVRUserService_389fd', operation: change, startup: 4, iso: true}
+  - !service: {name: 'BcastDVRUserService', operation: change, startup: 4, iso: true}
   - !service: {name: 'BDESVC', operation: change, startup: 4, iso: true}
   - !service: {name: 'Beep', operation: change, startup: 4, iso: true}
   - !service: {name: 'CldFlt', operation: change, startup: 4, iso: true}
