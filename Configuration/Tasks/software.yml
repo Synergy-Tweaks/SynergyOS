@@ -1,7 +1,5 @@
 ---
 title: Software 
-description: Install Software
-privilege: TrustedInstaller 
 actions:
 
   # oobe: true — SOFTWARE.ps1 needs a live user session and network; runs at first boot / live run

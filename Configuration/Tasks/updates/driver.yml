@@ -1,7 +1,5 @@
 ---
 title: Driver
-description: Disable Windows driver searching
-privilege: TrustedInstaller
 actions:
 
  - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Update', value: 'ExcludeWUDriversInQualityUpdate', type: REG_DWORD, data: '1', iso: true}

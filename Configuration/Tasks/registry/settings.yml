@@ -1,7 +1,5 @@
 ---
-title: Setttings
-description: Configure Windows settings
-privilege: TrustedInstaller
+title: Settings
 actions: 
 
   # disable settingssync

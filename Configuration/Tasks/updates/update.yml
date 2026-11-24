@@ -1,7 +1,5 @@
 ---
 title: Windows Updates
-description: Pause Windows Updates
-privilege: TrustedInstaller
 actions: 
 
  # pause windows updates

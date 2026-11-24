@@ -1,7 +1,5 @@
 ---
 title: AppX
-description: Remove appx packages
-privilege: TrustedInstaller
 actions:
 
  - !appx: {name: '*3DViewer*', type: family}

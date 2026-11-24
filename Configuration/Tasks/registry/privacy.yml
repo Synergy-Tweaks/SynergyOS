@@ -1,7 +1,5 @@
 ---
 title: Privacy
-description: Enhancing Privacy
-privilege: TrustedInstaller
 actions:
 
  # HKLM policies can run during ISO injection
