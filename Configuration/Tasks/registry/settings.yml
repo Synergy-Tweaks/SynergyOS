@@ -98,11 +98,15 @@ actions:
  # Win32Prio (can run during ISO injection)
  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl', value: 'Win32PrioritySeparation', type: REG_DWORD, data: '36', iso: true}
 
+ # Interrupt Steering Flags (Decimal 2 enables interrupt steering)
+ - !registryValue: {path: 'HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\kernel', value: 'InterruptSteeringFlags', type: REG_DWORD, data: '2', iso: true}
+
  # Disable WPBT / OEM firmware binaries (stops OEM "bloat" downloads at boot)
  - !registryValue: {path: 'HKLM\SYSTEM\CurrentControlSet\Control\Session Manager', value: 'DisableWpbtExecution', type: REG_DWORD, data: '1', iso: true}
 
  # Disable opening gamebar when pressing the xbox button on an xbox controller
  - !registryValue: {path: 'HKCU\Software\Microsoft\GameBar', value: 'UseNexusForGameBarEnabled', type: REG_DWORD, data: '0'}
+ 
  # disable opening gamebarr when connecting xbox controller
  - !registryValue: {path: 'HKCR\ms-gamebar', value: '', type: REG_SZ, data: 'URL:ms-gamebar'}
  - !registryValue: {path: 'HKCR\ms-gamebar', value: 'URL Protocol', type: REG_SZ, data: ''}
@@ -146,6 +150,9 @@ actions:
 
  - !writeStatus {status: "Optimizing Network"}
  - !cmd: {command: '"network.bat"', runas: trustedInstaller, exeDir: true, wait: true}
+
+ - !writeStatus {status: "Configuring MMCSS"}
+ - !powerShell: {command: '.\mmcss.ps1', runas: trustedInstaller, exeDir: true, wait: true}
   
  - !writeStatus {status: "Disabling Devices"}
  - !powerShell: {command: '.\devices.ps1', runas: trustedInstaller, exeDir: true, wait: true}
